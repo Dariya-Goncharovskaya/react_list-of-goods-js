@@ -14,12 +14,14 @@ export const goodsFromServer = [
   'Jam',
   'Garlic',
 ];
+
 export const App = () => {
   const [currentGoods, setCurrentGoods] = useState(goodsFromServer);
   const [isReversed, setIsReversed] = useState(false);
   const [sortType, setSortType] = useState(null);
+
   const handleSortAlphabetically = () => {
-    const sortedGoods = [...currentGoods].sort((a, b) => a.localeCompare(b));
+    const sortedGoods = [...goodsFromServer].sort((a, b) => a.localeCompare(b));
     const finalGoods = isReversed ? [...sortedGoods].reverse() : sortedGoods;
 
     setCurrentGoods(finalGoods);
@@ -27,7 +29,7 @@ export const App = () => {
   };
 
   const handleSortByLength = () => {
-    const sortedGoods = [...currentGoods].sort((a, b) => {
+    const sortedGoods = [...goodsFromServer].sort((a, b) => {
       const lengthDiff = a.length - b.length;
 
       return lengthDiff !== 0 ? lengthDiff : a.localeCompare(b);
@@ -51,6 +53,10 @@ export const App = () => {
     setSortType(null);
   };
 
+  const isOriginalOrder = currentGoods.every(
+    (good, index) => good === goodsFromServer[index],
+  );
+
   return (
     <div className="section content">
       <div className="buttons">
@@ -61,6 +67,7 @@ export const App = () => {
         >
           Sort alphabetically
         </button>
+
         <button
           type="button"
           className={`button is-success ${sortType === 'length' ? '' : 'is-light'}`}
@@ -68,6 +75,7 @@ export const App = () => {
         >
           Sort by length
         </button>
+
         <button
           type="button"
           className={`button is-warning ${isReversed ? '' : 'is-light'}`}
@@ -75,7 +83,8 @@ export const App = () => {
         >
           Reverse
         </button>
-        {currentGoods.join(',') !== goodsFromServer.join(',') && (
+
+        {!isOriginalOrder && (
           <button
             type="button"
             className="button is-danger is-light"
@@ -85,9 +94,10 @@ export const App = () => {
           </button>
         )}
       </div>
+
       <ul>
         {currentGoods.map(good => (
-          <li data-cy="Good" key={good}>
+          <li key={good} data-cy="Good">
             {good}
           </li>
         ))}
